@@ -1,0 +1,6 @@
+@BE_Glowpurea_HostAddress = http://localhost:5117
+
+GET {{BE_Glowpurea_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
