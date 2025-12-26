@@ -8,5 +8,8 @@ namespace BE_Glowpurea.IServices
         Task<LoginResponse> LoginAsync(LoginRequest request);
 
         Task VerifyOtpAsync(VerifyOtpRequest request);
+
+        Task<ProfileResponse> GetProfileAsync(string email);
+        Task<string> UploadAvatarAsync(string email, IFormFile image);
     }
 }

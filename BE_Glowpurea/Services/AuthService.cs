@@ -283,6 +283,49 @@ namespace BE_Glowpurea.Services
 
         }
 
+        public async Task<ProfileResponse> GetProfileAsync(string email)
+        {
+            var account = await _accountRepo.GetByEmailAsync(email);
+            if (account == null)
+                throw new Exception("Không tìm thấy tài khoản");
+
+            return new ProfileResponse
+            {
+                AccountId = account.AccountId,
+                AccountName = account.AccountName,
+                Email = account.Email,
+                PhoneNumber = account.PhoneNumber,
+                Role = account.Role!.RoleName,
+                Image = account.Image
+            };
+        }
+
+        public async Task<string> UploadAvatarAsync(string email, IFormFile image)
+        {
+            var account = await _accountRepo.GetByEmailAsync(email);
+            if (account == null)
+                throw new Exception("Không tìm thấy tài khoản");
+
+            if (!image.ContentType.StartsWith("image/"))
+                throw new Exception("File không hợp lệ");
+
+            if (image.Length > 2 * 1024 * 1024)
+                throw new Exception("Ảnh tối đa 2MB");
+
+            var folder = Path.Combine("wwwroot", "avatars");
+            Directory.CreateDirectory(folder);
+
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}";
+            var filePath = Path.Combine(folder, fileName);
+
+            using var stream = new FileStream(filePath, FileMode.Create);
+            await image.CopyToAsync(stream);
+
+            account.Image = $"/avatars/{fileName}";
+            await _accountRepo.UpdateAsync(account);
+
+            return account.Image;
+        }
 
     }
 }
