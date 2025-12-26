@@ -25,6 +25,8 @@ namespace BE_Glowpurea
                     builder.Configuration.GetConnectionString("DefaultConnection")
                 ));
 
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<IProductService, ProductService>();
             // =======================
             // JWT Authentication
             // =======================
@@ -86,7 +88,7 @@ namespace BE_Glowpurea
             // Build app
             // =======================
             var app = builder.Build();
-
+            app.UseStaticFiles();
             // =======================
             // Middleware
             // =======================
