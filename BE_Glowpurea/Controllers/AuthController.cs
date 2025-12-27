@@ -98,6 +98,26 @@ namespace BE_Glowpurea.Controllers
             return Ok(new { image = imageUrl });
         }
 
+
+        [Authorize]
+        [HttpPut("profile")]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+        {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            if (email == null)
+                return Unauthorized();
+
+            try
+            {
+                var result = await _authService.UpdateProfileAsync(email, request);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 
 }

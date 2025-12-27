@@ -326,6 +326,47 @@ namespace BE_Glowpurea.Services
 
             return account.Image;
         }
+        public async Task<ProfileResponse> UpdateProfileAsync(
+            string currentEmail,
+            UpdateProfileRequest request)
+        {
+            var account = await _accountRepo.GetByEmailAsync(currentEmail);
+            if (account == null)
+                throw new Exception("Không tìm thấy tài khoản");
+
+            // ✅ CHECK EMAIL MỚI
+            if (!string.Equals(account.Email, request.Email, StringComparison.OrdinalIgnoreCase))
+            {
+                var existedEmail = await _accountRepo.GetByEmailAsync(request.Email);
+                if (existedEmail != null)
+                    throw new Exception("Email đã được sử dụng");
+            }
+
+            // ✅ CHECK PHONE
+            if (!string.IsNullOrEmpty(request.PhoneNumber))
+            {
+                var existedPhone = await _accountRepo.GetByPhoneAsync(request.PhoneNumber);
+                if (existedPhone != null && existedPhone.AccountId != account.AccountId)
+                    throw new Exception("Số điện thoại đã được sử dụng");
+            }
+
+            account.AccountName = request.AccountName;
+            account.PhoneNumber = request.PhoneNumber;
+            account.Email = request.Email;
+            account.UpdatedAt = DateTime.Now;
+
+            await _accountRepo.UpdateAsync(account);
+
+            return new ProfileResponse
+            {
+                AccountId = account.AccountId,
+                AccountName = account.AccountName,
+                Email = account.Email,
+                PhoneNumber = account.PhoneNumber,
+                Role = account.Role!.RoleName,
+                Image = account.Image
+            };
+        }
 
     }
 }
