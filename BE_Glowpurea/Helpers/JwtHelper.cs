@@ -19,7 +19,7 @@ namespace BE_Glowpurea.Helpers
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, account.Email),
+                new Claim(ClaimTypes.Email, account.Email),
                 new Claim(ClaimTypes.Role, roleName),
                 new Claim("AccountId", account.AccountId.ToString())
             };

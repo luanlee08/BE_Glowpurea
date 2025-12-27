@@ -87,17 +87,17 @@ namespace BE_Glowpurea.Controllers
             return Ok(await _authService.GetProfileAsync(email));
         }
 
-        //[Authorize]
-        //[HttpPost("avatar")]
-        //public async Task<IActionResult> UploadAvatar([FromForm] UploadAvatarRequest request)
-        //{
-        //    var email = User.FindFirst(ClaimTypes.Email)?.Value;
-        //    if (email == null) return Unauthorized();
+        [Authorize]
+        [HttpPost("avatar")]
+        public async Task<IActionResult> UploadAvatar([FromForm] UploadAvatarRequest request)
+        {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            if (email == null) return Unauthorized();
 
-        //    var imageUrl = await _authService.UploadAvatarAsync(email, request.Image);
-        //    return Ok(new { image = imageUrl });
-        //}
-         
+            var imageUrl = await _authService.UploadAvatarAsync(email, request.Image);
+            return Ok(new { image = imageUrl });
+        }
+
     }
 
 }
