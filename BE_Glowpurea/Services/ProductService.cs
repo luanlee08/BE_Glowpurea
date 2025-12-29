@@ -3,6 +3,7 @@ using BE_Glowpurea.Helpers;
 using BE_Glowpurea.IRepositories;
 using BE_Glowpurea.IServices;
 using BE_Glowpurea.Models;
+using BE_Glowpurea.Repositories;
 
 namespace BE_Glowpurea.Services
 {
@@ -150,6 +151,29 @@ namespace BE_Glowpurea.Services
 
             await _productRepo.UpdateAsync(product);
         }
+
+        public async Task<List<ProductListResponse>> GetAllAsync()
+        {
+            var products = await _productRepo.GetAllAsync();
+
+            return products.Select(p => new ProductListResponse
+            {
+                ProductId = p.ProductId,
+                Sku = p.Sku,
+                ProductName = p.ProductName,
+                CategoryName = p.Category != null ? p.Category.CategoryName : null, 
+                ShapesName = p.Shapes != null ? p.Shapes.ShapesName : null,         
+                Price = p.Price,
+                Quantity = p.Quantity,
+                ProductStatus = p.ProductStatus,
+                CreatedAt = p.CreatedAt,                                            
+                MainImageUrl = p.ProductImages
+                    .Where(i => i.IsMain)
+                    .Select(i => i.ImageUrl)
+                    .FirstOrDefault()                                            
+            }).ToList();
+        }
+
 
     }
 }

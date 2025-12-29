@@ -7,6 +7,6 @@ namespace BE_Glowpurea.IServices
         Task<int> CreateAsync(CreateProductRequest request);
         Task<object> SearchAsync(SearchProductRequest request);
         Task UpdateAsync(int productId, UpdateProductRequest request);
-
+        Task<List<ProductListResponse>> GetAllAsync();
     }
 }

@@ -55,5 +55,11 @@ namespace BE_Glowpurea.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var products = await _productService.GetAllAsync();
+            return Ok(products);
+        }
     }
 }
