@@ -15,6 +15,7 @@ namespace BE_Glowpurea.Controllers
             _productService = productService;
         }
 
+        // ================= CREATE =================
         [HttpPost]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Create([FromForm] CreateProductRequest request)
@@ -27,16 +28,20 @@ namespace BE_Glowpurea.Controllers
             });
         }
 
-        [HttpGet("search")]
-        public async Task<IActionResult> Search([FromQuery] SearchProductRequest request)
+        // ================= VIEW + SEARCH + PAGINATION =================
+        [HttpGet]
+        public async Task<IActionResult> GetPaged(
+            [FromQuery] SearchProductRequest request)
         {
-            var result = await _productService.SearchAsync(request);
+            var result = await _productService.GetPagedAsync(request);
             return Ok(result);
         }
 
+        // ================= UPDATE =================
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id,
-        [FromBody] UpdateProductRequest request)
+        public async Task<IActionResult> Update(
+            int id,
+            [FromBody] UpdateProductRequest request)
         {
             try
             {
@@ -53,13 +58,6 @@ namespace BE_Glowpurea.Controllers
                     Error = ex.Message
                 });
             }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var products = await _productService.GetAllAsync();
-            return Ok(products);
         }
     }
 }
