@@ -60,6 +60,12 @@ namespace BE_Glowpurea
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
 
+            builder.Services.AddScoped<IShapeRepository, ShapeRepository>();
+            builder.Services.AddScoped<IShapeService, ShapeService>();
+
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+
             builder.Services.AddScoped<JwtHelper>();
 
             builder.Services.AddAuthorization();

@@ -15,7 +15,7 @@ namespace BE_Glowpurea.Repositories
         }
 
         public async Task<(List<ProductListResponse> Data, int Total)>
-            SearchByNameOrSkuAsync(SearchProductRequest request)
+    GetPagedAsync(SearchProductRequest request)
         {
             var query = _context.Products
                 .Include(p => p.Category)
@@ -23,7 +23,7 @@ namespace BE_Glowpurea.Repositories
                 .Include(p => p.ProductImages)
                 .Where(p => !p.IsDeleted);
 
-
+            // 🔍 SEARCH (nếu có)
             if (!string.IsNullOrWhiteSpace(request.Keyword))
             {
                 var keyword = request.Keyword.Trim();
@@ -39,27 +39,27 @@ namespace BE_Glowpurea.Repositories
                 .OrderByDescending(p => p.CreatedAt)
                 .Skip((request.Page - 1) * request.PageSize)
                 .Take(request.PageSize)
-             .Select(p => new ProductListResponse
-             {
-                 ProductId = p.ProductId,
-                 Sku = p.Sku,
-                 ProductName = p.ProductName,
-                 CategoryName = p.Category != null ? p.Category.CategoryName : null,
-                 ShapesName = p.Shapes != null ? p.Shapes.ShapesName : null,
-                 Price = p.Price,
-                 Quantity = p.Quantity,
-                 ProductStatus = p.ProductStatus,
-                 MainImageUrl = p.ProductImages
-        .Where(i => i.IsMain)
-        .Select(i => i.ImageUrl)
-        .FirstOrDefault()
-             })
-
-
+                .Select(p => new ProductListResponse
+                {
+                    ProductId = p.ProductId,
+                    Sku = p.Sku,
+                    ProductName = p.ProductName,
+                    CategoryName = p.Category != null ? p.Category.CategoryName : null,
+                    ShapesName = p.Shapes != null ? p.Shapes.ShapesName : null,
+                    Price = p.Price,
+                    Quantity = p.Quantity,
+                    ProductStatus = p.ProductStatus,
+                    CreatedAt = p.CreatedAt,
+                    MainImageUrl = p.ProductImages
+                        .Where(i => i.IsMain)
+                        .Select(i => i.ImageUrl)
+                        .FirstOrDefault()
+                })
                 .ToListAsync();
 
             return (data, total);
         }
+
         public async Task<bool> ExistsByNameAsync(string productName)
         {
             return await _context.Products
