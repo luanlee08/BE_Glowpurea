@@ -20,13 +20,27 @@ namespace BE_Glowpurea.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Create([FromForm] CreateProductRequest request)
         {
-            var productId = await _productService.CreateAsync(request);
-            return Ok(new
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
             {
-                Message = "Thêm sản phẩm thành công",
-                ProductId = productId
-            });
+                var productId = await _productService.CreateAsync(request);
+                return Ok(new
+                {
+                    Message = "Thêm sản phẩm thành công",
+                    ProductId = productId
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new
+                {
+                    Error = ex.Message
+                });
+            }
         }
+
 
         // ================= VIEW + SEARCH + PAGINATION =================
         [HttpGet]
