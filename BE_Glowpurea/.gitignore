@@ -15,5 +15,9 @@ appsettings.Production.json
 # Logs
 *.log
 
+# Uploaded files
+wwwroot/uploads/**
+wwwroot/avatars/**
+
 # Environment
 .env

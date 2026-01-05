@@ -1,0 +1,60 @@
+﻿using BE_Glowpurea.IRepositories;
+using BE_Glowpurea.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace BE_Glowpurea.Repositories
+{
+    public class BlogRepository : IBlogRepository
+    {
+        private readonly DbGlowpureaContext _context;
+
+        public BlogRepository(DbGlowpureaContext context)
+        {
+            _context = context;
+        }
+
+        public async Task AddAsync(BlogPost blog)
+        {
+            await _context.BlogPosts.AddAsync(blog);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<(List<BlogPost> Data, int Total)>
+SearchForAdminAsync(string? keyword, int page, int pageSize)
+        {
+            IQueryable<BlogPost> query = _context.BlogPosts
+                .Include(b => b.Account)
+                .Include(b => b.BlogCategories);
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(b =>
+                    b.BlogTitle.Contains(keyword) ||
+                    b.BlogContent.Contains(keyword));
+            }
+
+            var total = await query.CountAsync();
+
+            var data = await query
+                .OrderByDescending(b => b.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (data, total);
+        }
+
+
+        public async Task<BlogPost?> GetByIdAsync(int blogId)
+        {
+            return await _context.BlogPosts
+                .Include(b => b.BlogCategories)
+                .FirstOrDefaultAsync(b =>
+                    b.BlogPostId == blogId);
+        }
+    }
+}
