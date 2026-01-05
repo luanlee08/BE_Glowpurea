@@ -6,7 +6,7 @@ namespace BE_Glowpurea.IServices
     public interface IProductService
     {
         Task<PagedResponse<ProductListResponse>>GetPagedAsync(SearchProductRequest request);
-
+        Task<ProductDetailResponse?> GetByIdAsync(int productId);
         Task<int> CreateAsync(CreateProductRequest request);
         Task UpdateAsync(int productId, UpdateProductRequest request);
     }

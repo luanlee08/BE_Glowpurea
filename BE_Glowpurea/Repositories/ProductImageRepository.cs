@@ -64,5 +64,14 @@ namespace BE_Glowpurea.Repositories
                 throw;
             }
         }
+        public async Task RemoveSecondaryAsync(int productId)
+        {
+            var subs = await _ctx.ProductImages
+                .Where(x => x.ProductId == productId && !x.IsMain)
+                .ToListAsync();
+
+            _ctx.ProductImages.RemoveRange(subs);
+        }
+
     }
 }

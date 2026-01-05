@@ -14,7 +14,7 @@ namespace BE_Glowpurea.Dtos.Product
         [Required(ErrorMessage = "ShapesId không được để trống")]
         public int? ShapesId { get; set; }
 
-        [Range(0.01, double.MaxValue, ErrorMessage = "Giá sản phẩm phải lớn hơn 0")]
+        [Range(1000, 10000000, ErrorMessage = "Giá sản phẩm phải từ 1.000 đến 10.000.000")]
         public decimal Price { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "Số lượng phải >= 0")]

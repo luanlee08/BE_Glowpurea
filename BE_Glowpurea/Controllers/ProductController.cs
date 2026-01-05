@@ -53,25 +53,29 @@ namespace BE_Glowpurea.Controllers
 
         // ================= UPDATE =================
         [HttpPut("{id}")]
+        [Consumes("multipart/form-data")]
         public async Task<IActionResult> Update(
-            int id,
-            [FromBody] UpdateProductRequest request)
+     int id,
+     [FromForm] UpdateProductRequest request)
         {
             try
             {
                 await _productService.UpdateAsync(id, request);
-                return Ok(new
-                {
-                    Message = "Cập nhật sản phẩm thành công"
-                });
+                return Ok(new { Message = "Cập nhật sản phẩm thành công" });
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new
-                {
-                    Error = ex.Message
-                });
+                return BadRequest(new { Error = ex.Message });
             }
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var product = await _productService.GetByIdAsync(id);
+            if (product == null)
+                return NotFound();
+
+            return Ok(product);
         }
     }
 }
