@@ -36,6 +36,8 @@ namespace BE_Glowpurea
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
             builder.Services.AddScoped<IEmailOtpRepository, EmailOtpRepository>();
+            builder.Services.AddScoped<IBlogCategoryRepository, BlogCategoryRepository>();
+            builder.Services.AddScoped<IBlogRepository, BlogRepository>();
 
             /* =====================================================
              * SERVICES
@@ -44,7 +46,9 @@ namespace BE_Glowpurea
             builder.Services.AddScoped<IProductImageService, ProductImageService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IShapeService, ShapeService>();
+            builder.Services.AddScoped<IBlogService, BlogService>();
 
+            builder.Services.AddScoped<IBlogCategoryService, BlogCategoryService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
