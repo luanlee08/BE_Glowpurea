@@ -6,6 +6,7 @@ namespace BE_Glowpurea.Services
 {
     public class ProductImageService : IProductImageService
     {
+        private const int MIN_SUB = 4;
         private const int MAX_SUB = 6;
         private readonly IProductImageRepository _repo;
         private readonly IWebHostEnvironment _env;
@@ -24,8 +25,8 @@ namespace BE_Glowpurea.Services
             IFormFile mainImage,
             List<IFormFile> subImages)
         {
-            if (subImages.Count != MAX_SUB)
-                throw new ArgumentException("Phải upload đúng 6 ảnh phụ");
+            if (subImages.Count < MIN_SUB || subImages.Count > MAX_SUB)
+                throw new ArgumentException("Ảnh phụ phải từ 4 đến 6 ảnh");
 
             var uploadPath = Path.Combine(
                 _env.WebRootPath, "uploads", "products", sku);
@@ -57,10 +58,10 @@ namespace BE_Glowpurea.Services
         }
 
         public async Task UpdateImagesAsync(
-            int productId,
-            string sku,
-            IFormFile? newMainImage,
-            List<IFormFile>? newSubImages)
+     int productId,
+     string sku,
+     IFormFile? newMainImage,
+     List<IFormFile>? newSubImages)
         {
             var uploadPath = Path.Combine(
                 _env.WebRootPath, "uploads", "products", sku);
@@ -69,7 +70,7 @@ namespace BE_Glowpurea.Services
 
             await _repo.ExecuteInTransactionAsync(async () =>
             {
-                // MAIN
+                // ================= MAIN IMAGE =================
                 if (newMainImage != null)
                 {
                     await _repo.UnsetMainAsync(productId);
@@ -83,21 +84,26 @@ namespace BE_Glowpurea.Services
                     });
                 }
 
-                // SUB
+                // ================= SUB IMAGES (REPLACE) =================
                 if (newSubImages != null && newSubImages.Any())
                 {
-                    var existed = await _repo.CountSecondaryAsync(productId);
-                    var slots = Math.Max(0, MAX_SUB - existed);
+                    // 1️⃣ Validate theo ảnh MỚI
+                    if (newSubImages.Count < MIN_SUB || newSubImages.Count > MAX_SUB)
+                        throw new ArgumentException(
+                            $"Ảnh phụ phải từ {MIN_SUB} đến {MAX_SUB}");
 
-                    var toAdd = newSubImages.Take(slots)
-                        .Select(f => new ProductImage
-                        {
-                            ProductId = productId,
-                            ImageUrl = SaveFile(f, uploadPath, sku),
-                            IsMain = false
-                        });
+                    // 2️⃣ XOÁ TOÀN BỘ ảnh phụ cũ
+                    await _repo.RemoveSecondaryAsync(productId);
 
-                    await _repo.AddRangeAsync(toAdd);
+                    // 3️⃣ ADD ảnh phụ mới
+                    var subs = newSubImages.Select(f => new ProductImage
+                    {
+                        ProductId = productId,
+                        ImageUrl = SaveFile(f, uploadPath, sku),
+                        IsMain = false
+                    });
+
+                    await _repo.AddRangeAsync(subs);
                 }
 
                 await _repo.SaveChangesAsync();

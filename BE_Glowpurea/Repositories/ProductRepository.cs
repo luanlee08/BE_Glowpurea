@@ -87,18 +87,19 @@ namespace BE_Glowpurea.Repositories
         }
         public async Task<List<Product>> GetAllAsync()
         {
-                    return await _context.Products
-            .Include(p => p.Category)
-            .Include(p => p.Shapes)
-            .Include(p => p.ProductImages) // 👈 thêm
-            .Where(p => !p.IsDeleted)
-            .OrderByDescending(p => p.CreatedAt)
-            .ToListAsync();
+            return await _context.Products
+    .Include(p => p.Category)
+    .Include(p => p.Shapes)
+    .Include(p => p.ProductImages) // 👈 thêm
+    .Where(p => !p.IsDeleted)
+    .OrderByDescending(p => p.CreatedAt)
+    .ToListAsync();
 
         }
         public async Task<Product?> GetByIdAsync(int productId)
         {
             return await _context.Products
+                 .Include(p => p.ProductImages)
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
         }
 
