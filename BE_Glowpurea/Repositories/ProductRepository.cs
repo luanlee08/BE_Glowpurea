@@ -103,5 +103,67 @@ namespace BE_Glowpurea.Repositories
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
         }
 
+        public async Task<List<UserProductCardResponse>> GetForUserAsync()
+        {
+            return await _context.Products
+                .Include(p => p.ProductImages)
+                .Where(p =>
+                    !p.IsDeleted &&
+                    p.ProductStatus == "Available" &&   // chỉ bán được
+                    p.Quantity > 0
+                )
+                .OrderByDescending(p => p.CreatedAt)
+                .Select(p => new UserProductCardResponse
+                {
+                    Id = p.ProductId,
+                    Name = p.ProductName,
+                    Description = p.Description ?? "",
+                    Ingredients = "Thành phần thiên nhiên",
+                    Price = $"{p.Price:N0}₫",
+                    Image = p.ProductImages
+                        .Where(i => i.IsMain)
+                        .Select(i => i.ImageUrl)
+                        .FirstOrDefault() ?? "/placeholder.svg"
+                })
+
+                .ToListAsync();
+        }
+
+        public async Task<(List<UserProductCardResponse> Data, int Total)>
+    GetForUserPagedAsync(UserProductPagingRequest request)
+        {
+            var query = _context.Products
+                .Include(p => p.ProductImages)
+                .Where(p =>
+                    !p.IsDeleted &&
+                    p.ProductStatus == "Available" &&
+                    p.Quantity > 0
+                );
+
+            var total = await query.CountAsync();
+
+            var data = await query
+                .OrderByDescending(p => p.CreatedAt)
+                .Skip((request.Page - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(p => new UserProductCardResponse
+                {
+                    Id = p.ProductId,
+                    Name = p.ProductName,
+                    Description = p.Description ?? "",
+                    Ingredients = "Thành phần thiên nhiên",
+                    Price = $"{p.Price:N0}₫",
+                    Image = p.ProductImages
+                        .Where(i => i.IsMain)
+                        .Select(i => i.ImageUrl)
+                        .FirstOrDefault() ?? "/placeholder.svg"
+                })
+                .ToListAsync();
+
+            return (data, total);
+        }
+
+
+
     }
 }

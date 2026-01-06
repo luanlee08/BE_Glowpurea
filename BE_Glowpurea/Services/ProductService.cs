@@ -44,7 +44,7 @@ namespace BE_Glowpurea.Services
         {
             if (request.SubImages.Count < 4 || request.SubImages.Count > 6)
                 throw new ArgumentException("Ảnh phụ phải từ 4 đến 6 ảnh");
-    
+
             if (await _productRepo.ExistsByNameAsync(request.ProductName))
                 throw new ArgumentException("Tên sản phẩm đã tồn tại");
 
@@ -147,6 +147,29 @@ namespace BE_Glowpurea.Services
                     .Where(x => !x.IsMain)
                     .Select(x => x.ImageUrl)
                     .ToList()
+            };
+        }
+
+        public async Task<List<UserProductCardResponse>> GetForUserAsync()
+        {
+            return await _productRepo.GetForUserAsync();
+        }
+
+        public async Task<PagedResponse<UserProductCardResponse>>
+    GetForUserPagedAsync(UserProductPagingRequest request)
+        {
+            if (request.Page < 1) request.Page = 1;
+            if (request.PageSize < 1) request.PageSize = 8;
+
+            var (data, total) =
+                await _productRepo.GetForUserPagedAsync(request);
+
+            return new PagedResponse<UserProductCardResponse>
+            {
+                Total = total,
+                Page = request.Page,
+                PageSize = request.PageSize,
+                Data = data
             };
         }
 
