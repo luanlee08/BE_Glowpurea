@@ -89,7 +89,10 @@ namespace BE_Glowpurea
                 options.AddPolicy("AllowFrontend", policy =>
                 {
                     policy
-                        .WithOrigins("http://localhost:3000")
+                        .WithOrigins(
+                            "http://localhost:3000", // Admin
+                            "http://localhost:3001"  // User
+                         )
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });

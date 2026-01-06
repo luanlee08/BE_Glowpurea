@@ -10,5 +10,17 @@ namespace BE_Glowpurea.IServices
         Task<PagedResponse<BlogAdminResponse>>
             SearchForAdminAsync(SearchBlogAdminRequest request);
         Task UpdateAsync(int blogId, UpdateBlogRequest request);
+
+        Task<PagedResponse<BlogPublicResponse>> GetPublicAsync(
+            string? keyword,
+            int? categoryId,
+            int page,
+            int pageSize
+        );
+
+        Task<BlogDetailResponse> GetPublicDetailAsync(int blogId);
+
+        Task<List<BlogPublicResponse>> GetRecentAsync(int limit);
+
     }
 }

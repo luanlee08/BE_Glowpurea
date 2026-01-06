@@ -9,6 +9,18 @@ namespace BE_Glowpurea.IRepositories
         Task<(List<BlogPost> Data, int Total)> SearchForAdminAsync(string? keyword, int page, int pageSize);
         Task<BlogPost?> GetByIdAsync(int blogId);
 
+
+        Task<(List<BlogPost>, int)> GetPublicAsync(
+            string? keyword,
+            int? categoryId,
+            int page,
+            int pageSize
+        );
+        Task<BlogPost?> GetPublicDetailAsync(int blogId);
+        Task<BlogPost?> GetPublicByIdAsync(int blogId);
+
+        Task<List<BlogPost>> GetRecentAsync(int limit);
+
         Task SaveChangesAsync();
     }
 }
