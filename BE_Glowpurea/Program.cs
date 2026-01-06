@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.Extensions.FileProviders;
+
 
 namespace BE_Glowpurea
 {
@@ -89,7 +91,10 @@ namespace BE_Glowpurea
                 options.AddPolicy("AllowFrontend", policy =>
                 {
                     policy
-                        .WithOrigins("http://localhost:3000")
+                        .WithOrigins(
+                                 "http://localhost:3000", // Admin
+                                 "http://localhost:3001"  // User
+                              )
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
@@ -103,7 +108,16 @@ namespace BE_Glowpurea
              * ===================================================== */
             var app = builder.Build();
 
-            app.UseStaticFiles();
+            app.UseStaticFiles(); // wwwroot
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "uploads")
+                ),
+                RequestPath = "/uploads"
+            });
+
 
             if (app.Environment.IsDevelopment())
             {

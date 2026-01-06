@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BE_Glowpurea.Controllers
 {
     [ApiController]
-    [Route("api/products")]
+    [Route("api/admin/products")]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
