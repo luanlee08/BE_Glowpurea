@@ -19,7 +19,8 @@ namespace BE_Glowpurea.Controllers
         public async Task<IActionResult> Search(
             [FromQuery] SearchBlogAdminRequest request)
         {
-            return Ok(await _blogService.SearchForAdminAsync(request));
+            var result = await _blogService.SearchForAdminAsync(request);
+            return Ok(result);
         }
 
         [HttpPost]
