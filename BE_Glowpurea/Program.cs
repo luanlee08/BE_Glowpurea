@@ -110,13 +110,6 @@ namespace BE_Glowpurea
 
             app.UseStaticFiles(); // wwwroot
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "uploads")
-                ),
-                RequestPath = "/uploads"
-            });
 
 
             if (app.Environment.IsDevelopment())
