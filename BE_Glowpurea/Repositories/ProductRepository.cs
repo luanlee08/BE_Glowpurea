@@ -140,6 +140,17 @@ namespace BE_Glowpurea.Repositories
                     p.Quantity > 0
                 );
 
+            // 🔍 SEARCH CHO USER
+            if (!string.IsNullOrWhiteSpace(request.Keyword))
+            {
+                var keyword = request.Keyword.Trim();
+
+                query = query.Where(p =>
+                    p.ProductName.Contains(keyword) ||
+                    (p.Description != null && p.Description.Contains(keyword))
+                );
+            }
+
             var total = await query.CountAsync();
 
             var data = await query
@@ -162,8 +173,6 @@ namespace BE_Glowpurea.Repositories
 
             return (data, total);
         }
-
-
 
     }
 }
