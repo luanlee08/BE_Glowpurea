@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BE_Glowpurea.Controllers
 {
     [ApiController]
-    [Route("api/products")]
+    [Route("api/user/products")]
     public class UserProductController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -19,6 +19,14 @@ namespace BE_Glowpurea.Controllers
         [HttpGet("user")]
         public async Task<IActionResult> GetForUserPaged(
             [FromQuery] UserProductPagingRequest request)
+        {
+            var result = await _productService.GetForUserPagedAsync(request);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Search(
+        [FromQuery] UserProductPagingRequest request)
         {
             var result = await _productService.GetForUserPagedAsync(request);
             return Ok(result);
