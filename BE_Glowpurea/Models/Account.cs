@@ -19,6 +19,8 @@ public partial class Account
 
     public string Password { get; set; } = null!;
 
+    public string? CurrentJti { get; set; }
+
     public bool IsDeleted { get; set; }
 
     public string Status { get; set; } = null!;

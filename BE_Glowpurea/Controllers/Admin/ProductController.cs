@@ -2,11 +2,11 @@
 using BE_Glowpurea.IServices;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BE_Glowpurea.Controllers
+namespace BE_Glowpurea.Controllers.Admin
 {
     [ApiController]
     [Route("api/admin/products")]
-    public class ProductController : ControllerBase
+    public class ProductController : AdminBaseController
     {
         private readonly IProductService _productService;
 

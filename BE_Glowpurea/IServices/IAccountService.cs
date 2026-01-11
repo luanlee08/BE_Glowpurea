@@ -9,5 +9,10 @@ namespace BE_Glowpurea.IServices
         Task<AccountDetailResponse> GetByIdAsync(int accountId);
         Task<object> GetAllAsync(int page, int pageSize);
 
+        Task<object> SearchCustomerAsync(SearchAccountRequest request);
+        Task UpdateCustomerStatusAsync(
+            int customerId,
+            UpdateCustomerStatusRequest request);
+
     }
 }

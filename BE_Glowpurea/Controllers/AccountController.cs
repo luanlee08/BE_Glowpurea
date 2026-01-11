@@ -8,6 +8,7 @@ namespace BE_Glowpurea.Controllers
     [Route("api/accounts")]
     public class AccountController : ControllerBase
     {
+
         private readonly IAccountService _accountService;
 
         public AccountController(IAccountService accountService)
@@ -15,61 +16,26 @@ namespace BE_Glowpurea.Controllers
             _accountService = accountService;
         }
 
-        [HttpGet("search")]
-        public async Task<IActionResult> Search([FromQuery] SearchAccountRequest request)
-        {
-            var result = await _accountService.SearchAsync(request);
-            return Ok(result);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(
-    int id,
-    [FromBody] UpdateAccountRequest request)
-        {
-            try
-            {
-                await _accountService.UpdateAsync(id, request);
-                return Ok(new
-                {
-                    Message = "Cập nhật account thành công"
-                });
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new
-                {
-                    Error = ex.Message
-                });
-            }
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            try
-            {
-                var result = await _accountService.GetByIdAsync(id);
-                return Ok(result);
-            }
-            catch (ArgumentException ex)
-            {
-                return NotFound(new
-                {
-                    Error = ex.Message
-                });
-            }
-        }
-
         [HttpGet]
-        public async Task<IActionResult> GetAll(
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetCustomers(
+            [FromQuery] SearchAccountRequest request)
         {
-            var result = await _accountService.GetAllAsync(page, pageSize);
+            var result = await _accountService.SearchCustomerAsync(request);
             return Ok(result);
         }
 
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> UpdateStatus(
+            int id,
+            [FromBody] UpdateCustomerStatusRequest request)
+        {
+            await _accountService.UpdateCustomerStatusAsync(id, request);
+
+            return Ok(new
+            {
+                Message = "Cập nhật trạng thái customer thành công"
+            });
+        }
 
     }
 }

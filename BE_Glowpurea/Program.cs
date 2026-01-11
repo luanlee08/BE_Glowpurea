@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.FileProviders;
+using BE_Glowpurea.Filters;
 
 
 namespace BE_Glowpurea
@@ -49,7 +50,7 @@ namespace BE_Glowpurea
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IShapeService, ShapeService>();
             builder.Services.AddScoped<IBlogService, BlogService>();
-
+            builder.Services.AddScoped<SingleSessionFilter>();
             builder.Services.AddScoped<IBlogCategoryService, BlogCategoryService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IAuthService, AuthService>();

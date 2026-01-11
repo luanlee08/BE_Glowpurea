@@ -33,6 +33,7 @@ namespace BE_Glowpurea.Controllers
 
             return Ok(product);
         }
+        [HttpGet("paged")]  
         public async Task<IActionResult> GetPagedForUser(
            [FromQuery] UserProductPagingRequest request)
         {

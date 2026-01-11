@@ -2,11 +2,11 @@
 using BE_Glowpurea.IServices;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BE_Glowpurea.Controllers
+namespace BE_Glowpurea.Controllers.Admin
 {
     [ApiController]
     [Route("api/admin/blogs")]
-    public class AdminBlogController : Controller
+    public class AdminBlogController :  AdminBaseController
     {
         private readonly IBlogService _blogService;
 
@@ -28,8 +28,7 @@ namespace BE_Glowpurea.Controllers
         public async Task<IActionResult> Create([FromForm] CreateBlogRequest request)
 
         {
-            // TODO: sau này lấy từ JWT
-            int accountId = 1;
+            var accountId = int.Parse(User.FindFirst("AccountId")!.Value);
 
             var blogId = await _blogService.CreateAsync(request, accountId);
 

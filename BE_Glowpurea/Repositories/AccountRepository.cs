@@ -142,5 +142,59 @@ namespace BE_Glowpurea.Repositories
             return (data, total);
         }
 
+        public async Task<(List<CustomerResponse> Data, int Total)>
+    SearchCustomerAsync(SearchAccountRequest request)
+        {
+            var query = _context.Accounts
+                .Include(a => a.Role)
+                .Where(a =>
+                    !a.IsDeleted &&
+                    a.RoleId == request.RoleId)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(request.Keyword))
+            {
+                var keyword = request.Keyword.Trim();
+                query = query.Where(a =>
+                    a.AccountName.Contains(keyword) ||
+                    a.Email.Contains(keyword) ||
+                    a.PhoneNumber!.Contains(keyword));
+            }
+
+            if (!string.IsNullOrEmpty(request.Status))
+            {
+                query = query.Where(a => a.Status == request.Status);
+            }
+
+            var total = await query.CountAsync();
+
+            var data = await query
+                .OrderByDescending(a => a.CreatedAt)
+                .Skip((request.Page - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(a => new CustomerResponse
+                {
+                    AccountId = a.AccountId,
+                    AccountName = a.AccountName,
+                    Email = a.Email,
+                    PhoneNumber = a.PhoneNumber,
+                    Status = a.Status,
+                    CreatedAt = a.CreatedAt
+                })
+                .ToListAsync();
+
+            return (data, total);
+        }
+
+        public async Task<Account?> GetCustomerByIdAsync(int customerId)
+        {
+            return await _context.Accounts
+                .FirstOrDefaultAsync(a =>
+                    a.AccountId == customerId &&
+                    !a.IsDeleted &&
+                    a.RoleId == 3);
+        }
+
+
     }
 }

@@ -15,10 +15,24 @@ namespace BE_Glowpurea.Helpers
             _config = config;
         }
 
+        // ================= CUSTOMER / USER =================
         public string GenerateToken(Account account, string roleName)
         {
+            return GenerateToken(account, roleName, out _);
+        }
+
+        // ================= ADMIN (SINGLE LOGIN) =================
+        public string GenerateToken(
+            Account account,
+            string roleName,
+            out string jti
+        )
+        {
+            jti = Guid.NewGuid().ToString();
+
             var claims = new List<Claim>
             {
+                new Claim(JwtRegisteredClaimNames.Jti, jti),
                 new Claim(ClaimTypes.Email, account.Email),
                 new Claim(ClaimTypes.Role, roleName),
                 new Claim("AccountId", account.AccountId.ToString())

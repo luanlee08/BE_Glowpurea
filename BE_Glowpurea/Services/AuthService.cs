@@ -368,5 +368,47 @@ namespace BE_Glowpurea.Services
             };
         }
 
+        public async Task<AdminLoginResponse> AdminLoginAsync(AdminLoginRequest request)
+        {
+            Account? account;
+
+            if (request.Identifier.Contains("@"))
+                account = await _accountRepo.GetByEmailAsync(request.Identifier);
+            else
+                account = await _accountRepo.GetByPhoneAsync(request.Identifier);
+
+            if (account == null)
+                throw new Exception("Tài khoản không tồn tại");
+
+            if (account.RoleId != 1)
+                throw new Exception("Bạn không có quyền truy cập trang quản trị");
+
+            if (!BCrypt.Net.BCrypt.Verify(request.Password, account.Password))
+                throw new Exception("Sai mật khẩu");
+
+            if (account.Status != "Active")
+                throw new Exception("Tài khoản bị khóa");
+
+            string jti;
+            var token = _jwtHelper.GenerateToken(
+                account,
+                account.Role!.RoleName,
+                out jti
+            );
+
+            account.CurrentJti = jti;
+            await _accountRepo.UpdateAsync(account);
+
+            return new AdminLoginResponse
+            {
+                AccountId = account.AccountId,
+                AccountName = account.AccountName,
+                Email = account.Email,
+                Role = account.Role.RoleName,
+                Token = token
+            };
+        }
+
+
     }
 }

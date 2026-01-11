@@ -72,6 +72,41 @@ namespace BE_Glowpurea.Services
                 Data = data
             };
         }
+        public async Task<object> SearchCustomerAsync(
+          SearchAccountRequest request)
+        {
+            if (request.Page < 1) request.Page = 1;
+            if (request.PageSize < 1) request.PageSize = 10;
+
+            request.RoleId = 2; // Customer
+
+            var (data, total) =
+                await _accountRepo.SearchCustomerAsync(request);
+
+            return new
+            {
+                Total = total,
+                Page = request.Page,
+                PageSize = request.PageSize,
+                Data = data
+            };
+        }
+
+        // ================= ADMIN: BLOCK / UNBLOCK =================
+        public async Task UpdateCustomerStatusAsync(
+            int customerId,
+            UpdateCustomerStatusRequest request)
+        {
+            var customer = await _accountRepo.GetCustomerByIdAsync(customerId);
+
+            if (customer == null)
+                throw new ArgumentException("Customer không tồn tại");
+
+            customer.Status = request.Status; // Active | Blocked
+            customer.UpdatedAt = DateTime.Now;
+
+            await _accountRepo.UpdateAsync(customer);
+        }
 
     }
 }
