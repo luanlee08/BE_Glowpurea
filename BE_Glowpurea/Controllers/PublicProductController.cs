@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BE_Glowpurea.Controllers
 {
     [ApiController]
-    [Route("api/products")]
+    [Route("api/public/products")]
     public class PublicProductController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -15,32 +15,29 @@ namespace BE_Glowpurea.Controllers
             _productService = productService;
         }
 
-        // ================= USER LIST =================
+        // ================= PUBLIC LIST + SEARCH + PAGING =================
+        // GET /api/public/products?keyword=son&page=1&pageSize=8
         [HttpGet]
-        public async Task<IActionResult> GetForUser()
+        public async Task<IActionResult> Get(
+            [FromQuery] UserProductPagingRequest request)
         {
-            var products = await _productService.GetForUserAsync();
-            return Ok(products);
+            var result = await _productService.GetForUserPagedAsync(request);
+            return Ok(result);
         }
 
-        // ================= USER DETAIL =================
-        [HttpGet("{id}")]
+        // ================= PUBLIC DETAIL =================
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetDetail(int id)
         {
             var product = await _productService.GetByIdAsync(id);
+
             if (product == null)
-                return NotFound();
+                return NotFound(new
+                {
+                    Message = "Không tìm thấy sản phẩm"
+                });
 
             return Ok(product);
-        }
-        [HttpGet("paged")]  
-        public async Task<IActionResult> GetPagedForUser(
-           [FromQuery] UserProductPagingRequest request)
-        {
-            var result =
-                await _productService.GetForUserPagedAsync(request);
-
-            return Ok(result);
         }
     }
 }

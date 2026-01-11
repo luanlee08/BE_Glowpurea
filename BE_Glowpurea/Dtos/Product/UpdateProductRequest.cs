@@ -5,8 +5,8 @@ namespace BE_Glowpurea.Dtos.Product
 {
     public class UpdateProductRequest
     {
-        [Required]
-        [StringLength(255)]
+        [Required(ErrorMessage = "Tên sản phẩm không được để trống")]
+        [StringLength(255, ErrorMessage = "Tên sản phẩm tối đa 255 ký tự")]
         public string ProductName { get; set; } = null!;
 
         [Required]
