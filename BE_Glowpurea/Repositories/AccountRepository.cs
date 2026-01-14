@@ -192,7 +192,7 @@ namespace BE_Glowpurea.Repositories
                 .FirstOrDefaultAsync(a =>
                     a.AccountId == customerId &&
                     !a.IsDeleted &&
-                    a.RoleId == 3);
+                    a.RoleId == 2);
         }
 
 
