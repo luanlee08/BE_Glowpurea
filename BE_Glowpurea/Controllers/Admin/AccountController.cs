@@ -2,10 +2,10 @@
 using BE_Glowpurea.IServices;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BE_Glowpurea.Controllers
+namespace BE_Glowpurea.Controllers.Admin
 {
     [ApiController]
-    [Route("api/accounts")]
+    [Route("api/admin/accounts")]
     public class AccountController : ControllerBase
     {
 
@@ -20,7 +20,7 @@ namespace BE_Glowpurea.Controllers
         public async Task<IActionResult> GetCustomers(
             [FromQuery] SearchAccountRequest request)
         {
-            var result = await _accountService.SearchCustomerAsync(request);
+            var result = await _accountService.SearchAsync(request);
             return Ok(result);
         }
 
