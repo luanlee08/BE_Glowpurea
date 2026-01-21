@@ -1,4 +1,5 @@
-﻿using BE_Glowpurea.Dtos.Order;
+﻿using BE_Glowpurea.Dtos;
+using BE_Glowpurea.Dtos.Order;
 using BE_Glowpurea.IRepositories;
 using BE_Glowpurea.IServices;
 using BE_Glowpurea.Models;
@@ -200,6 +201,33 @@ namespace BE_Glowpurea.Services
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<PagedResponse<AdminOrderListResponse>> GetPagedOrdersForAdminAsync(int page,int pageSize)
+        {
+            if (page <= 0) page = 1;
+            if (pageSize <= 0) pageSize = 10;
+
+            var (orders, total) =
+                await _orderRepository.GetPagedForAdminAsync(page, pageSize);
+
+            return new PagedResponse<AdminOrderListResponse>
+            {
+                Total = total,
+                Page = page,
+                PageSize = pageSize,
+                Data = orders.Select(o => new AdminOrderListResponse
+                {
+                    OrderId = o.OrderId,
+                    AccountId = o.AccountId,
+                    AccountName = o.Account.AccountName,
+                    Email = o.Account.Email,
+                    TotalAmount = o.TotalAmount,
+                    Status = o.Status.StatusName,
+                    CreatedAt = o.CreatedAt
+                }).ToList()
+            };
+        }
+
 
     }
 }

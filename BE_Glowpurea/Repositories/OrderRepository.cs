@@ -59,5 +59,25 @@ namespace BE_Glowpurea.Repositories
                 );
         }
 
+        public async Task<(List<Order> Orders, int Total)> GetPagedForAdminAsync(
+    int page,
+    int pageSize
+)
+        {
+            var query = _context.Orders
+                .Include(o => o.Account)
+                .Include(o => o.Status)
+                .OrderByDescending(o => o.CreatedAt);
+
+            var total = await query.CountAsync();
+
+            var orders = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (orders, total);
+        }
+
     }
 }

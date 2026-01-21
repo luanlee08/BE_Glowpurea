@@ -16,5 +16,7 @@ namespace BE_Glowpurea.IRepositories
         
         Task<(List<UserProductCardResponse> Data, int Total)>
             GetForUserPagedAsync(UserProductPagingRequest request);
+        Task<(List<Order> Orders, int Total)> GetPagedForAdminAsync(int page, int pageSize);
+
     }
 }
