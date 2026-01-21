@@ -12,5 +12,7 @@ namespace BE_Glowpurea.IRepositories
         // ===== COMMAND =====
         Task AddAsync(Order order);
         Task SaveChangesAsync();
+        Task<(List<Order> Orders, int Total)> GetPagedForAdminAsync(int page, int pageSize);
+
     }
 }

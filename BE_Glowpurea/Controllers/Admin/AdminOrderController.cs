@@ -17,14 +17,6 @@ namespace BE_Glowpurea.Controllers.Admin
             _orderService = orderService;
         }
 
-        // ===== VIEW ALL ORDERS =====
-        [HttpGet]
-        public async Task<IActionResult> GetAllOrders()
-        {
-            var result = await _orderService.GetAllOrdersForAdminAsync();
-            return Ok(result);
-        }
-
         // ===== VIEW ORDER DETAIL =====
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetOrderDetail(int id)
@@ -43,5 +35,19 @@ namespace BE_Glowpurea.Controllers.Admin
             await _orderService.UpdateOrderStatusAsync(id, request.StatusId);
             return Ok(new { Message = "Cập nhật trạng thái đơn hàng thành công" });
         }
+
+        // ===== VIEW ALL ORDERS (PAGED) =====
+        [HttpGet]
+        public async Task<IActionResult> GetAllOrders(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10
+        )
+        {
+            var result =
+                await _orderService.GetPagedOrdersForAdminAsync(page, pageSize);
+
+            return Ok(result);
+        }
+
     }
 }

@@ -1,4 +1,6 @@
-﻿using BE_Glowpurea.Dtos.Order;
+﻿using BE_Glowpurea.Dtos;
+using BE_Glowpurea.Dtos.Order;
+using BE_Glowpurea.Models;
 
 namespace BE_Glowpurea.IServices
 {
@@ -14,6 +16,7 @@ namespace BE_Glowpurea.IServices
         Task<AdminOrderDetailResponse> GetOrderDetailForAdminAsync(int orderId);
         Task UpdateOrderStatusAsync(int orderId, int statusId);
         Task<OrderDetailResponse> GetMyOrderDetailAsync(int accountId, int orderId);
+        Task<PagedResponse<AdminOrderListResponse>> GetPagedOrdersForAdminAsync(int page, int pageSize);
     }
 
 }
