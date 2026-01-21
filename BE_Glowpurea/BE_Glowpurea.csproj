@@ -29,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\uploads\avatars\" />
     <Folder Include="wwwroot\uploads\blogs\" />
     <Folder Include="wwwroot\uploads\products\" />
   </ItemGroup>
