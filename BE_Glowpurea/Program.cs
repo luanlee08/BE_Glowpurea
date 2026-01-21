@@ -41,6 +41,8 @@ namespace BE_Glowpurea
             builder.Services.AddScoped<IEmailOtpRepository, EmailOtpRepository>();
             builder.Services.AddScoped<IBlogCategoryRepository, BlogCategoryRepository>();
             builder.Services.AddScoped<IBlogRepository, BlogRepository>();
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
             /* =====================================================
              * SERVICES
@@ -55,8 +57,11 @@ namespace BE_Glowpurea
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
-
+            builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<JwtHelper>();
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IAddressService, AddressService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
 
             /* =====================================================
              * AUTHENTICATION & AUTHORIZATION (JWT)
@@ -81,6 +86,8 @@ namespace BE_Glowpurea
                 });
 
             builder.Services.AddAuthorization();
+            builder.Services.AddScoped<IProfileService, ProfileService>();
+            
 
             /* =====================================================
              * CONTROLLERS, CORS, SWAGGER
