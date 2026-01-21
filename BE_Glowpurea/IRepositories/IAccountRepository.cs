@@ -18,10 +18,8 @@ namespace BE_Glowpurea.IRepositories
         Task<AccountDetailResponse?> GetDetailByIdAsync(int accountId);
         Task<(List<AccountResponse> Data, int Total)> GetAllAsync(int page, int pageSize);
 
-
         Task<(List<CustomerResponse> Data, int Total)>
         SearchCustomerAsync(SearchAccountRequest request);
-
         Task<Account?> GetCustomerByIdAsync(int customerId);
 
     }
