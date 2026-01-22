@@ -43,6 +43,8 @@ namespace BE_Glowpurea
             builder.Services.AddScoped<IBlogRepository, BlogRepository>();
             builder.Services.AddScoped<ICartRepository, CartRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+            builder.Services.AddScoped<IDashboardService, DashboardService>();
 
             /* =====================================================
              * SERVICES
