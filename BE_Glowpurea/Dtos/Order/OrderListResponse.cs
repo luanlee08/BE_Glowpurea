@@ -6,5 +6,8 @@
         public DateTime CreatedAt { get; set; }
         public decimal TotalAmount { get; set; }
         public string Status { get; set; } = string.Empty;
+        // PREVIEW
+        public int TotalItems { get; set; }
+        public OrderItemPreviewResponse? PreviewItem { get; set; }
     }
 }
