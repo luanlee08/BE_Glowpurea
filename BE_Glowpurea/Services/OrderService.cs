@@ -95,18 +95,45 @@ namespace BE_Glowpurea.Services
         public async Task<List<OrderListResponse>> GetMyOrdersAsync(int accountId)
         {
             return await _context.Orders
-                .Where(o => o.AccountId == accountId)
-                .Include(o => o.Status) // ✅ QUAN TRỌNG
-                .OrderByDescending(o => o.CreatedAt)
-                .Select(o => new OrderListResponse
+            .Where(o => o.AccountId == accountId)
+            .Include(o => o.Status)
+            .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Product)
+                    .ThenInclude(p => p.ProductImages) // ✅ BẮT BUỘC
+            .OrderByDescending(o => o.CreatedAt)
+            .Select(o => new OrderListResponse
+            {
+                OrderId = o.OrderId,
+                CreatedAt = o.CreatedAt,
+                TotalAmount = o.TotalAmount,
+                Status = o.Status.StatusName,
+
+                TotalItems = o.OrderDetails.Count(od => !od.IsDeleted),
+
+                PreviewItem = o.OrderDetails
+                .Where(od => !od.IsDeleted)
+                .OrderBy(od => od.OrderDetailId)
+                .Select(od => new OrderItemPreviewResponse
                 {
-                    OrderId = o.OrderId,
-                    CreatedAt = o.CreatedAt,
-                    TotalAmount = o.TotalAmount,
-                    Status = o.Status.StatusName
+                    ProductId = od.ProductId,
+                    ProductName = od.Product.ProductName,
+
+                    // ✅ LẤY ẢNH ĐẠI DIỆN
+                    ImageUrl = od.Product.ProductImages
+                        .Where(pi => pi.IsMain)
+                        .Select(pi => pi.ImageUrl)
+                        .FirstOrDefault(),
+
+                    UnitPrice = od.UnitPrice,
+                    Quantity = od.Quantity
                 })
-                .ToListAsync();
+                .FirstOrDefault()
+
+            })
+            .ToListAsync();
+
         }
+
 
         public async Task<OrderDetailResponse> GetMyOrderDetailAsync(int accountId, int orderId)
         {
@@ -202,7 +229,7 @@ namespace BE_Glowpurea.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<PagedResponse<AdminOrderListResponse>> GetPagedOrdersForAdminAsync(int page,int pageSize)
+        public async Task<PagedResponse<AdminOrderListResponse>> GetPagedOrdersForAdminAsync(int page, int pageSize)
         {
             if (page <= 0) page = 1;
             if (pageSize <= 0) pageSize = 10;
