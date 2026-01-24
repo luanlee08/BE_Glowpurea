@@ -18,7 +18,11 @@ namespace BE_Glowpurea
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+            {
+                Args = args,
+                WebRootPath = "wwwroot"
+            });
 
             /* =====================================================
              * DATABASE
@@ -70,6 +74,12 @@ namespace BE_Glowpurea
              * ===================================================== */
             var jwtConfig = builder.Configuration.GetSection("Jwt");
             var key = Encoding.UTF8.GetBytes(jwtConfig["Key"]);
+            //builder.Services.AddDbContext<DbGlowpureaContext>(options =>
+            //{
+            //    options.UseSqlServer(
+            //        builder.Configuration.GetConnectionString("DefaultConnection")
+            //    );
+            //});
 
             builder.Services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -89,7 +99,7 @@ namespace BE_Glowpurea
 
             builder.Services.AddAuthorization();
             builder.Services.AddScoped<IProfileService, ProfileService>();
-            
+
 
             /* =====================================================
              * CONTROLLERS, CORS, SWAGGER
@@ -103,7 +113,9 @@ namespace BE_Glowpurea
                     policy
                         .WithOrigins(
                                  "http://localhost:3000", // Admin
-                                 "http://localhost:3001"  // User
+                                 "http://localhost:3001",  // User
+                                 "https://glowpurea.id.vn",        // Customer FE
+                                 "https://admin.glowpurea.id.vn"
                               )
                         .AllowAnyHeader()
                         .AllowAnyMethod();
@@ -113,6 +125,8 @@ namespace BE_Glowpurea
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+
+
             /* =====================================================
              * BUILD APP
              * ===================================================== */
@@ -120,15 +134,11 @@ namespace BE_Glowpurea
 
             app.UseStaticFiles(); // wwwroot
 
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
-
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseHttpsRedirection();
+            // deploy lan 2
+            //app.UseHttpsRedirection();
             app.UseCors("AllowFrontend");
 
             app.UseAuthentication();

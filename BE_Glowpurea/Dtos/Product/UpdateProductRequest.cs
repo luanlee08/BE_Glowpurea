@@ -30,5 +30,7 @@ namespace BE_Glowpurea.Dtos.Product
         // ✅ THÊM ẢNH UPDATE
         public IFormFile? NewMainImage { get; set; }
         public List<IFormFile>? NewSubImages { get; set; }
+        public List<string>? KeepSubImageUrls { get; set; }
+
     }
 }

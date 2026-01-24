@@ -9,9 +9,12 @@
         List<IFormFile> subImages);
 
         Task UpdateImagesAsync(
-            int productId,
-            string sku,
-            IFormFile? newMainImage,
-            List<IFormFile>? newSubImages);
+     int productId,
+     string sku,
+     IFormFile? newMainImage,
+     List<IFormFile>? newSubImages,
+     List<string>? keepSubImageUrls
+ );
+
     }
 }

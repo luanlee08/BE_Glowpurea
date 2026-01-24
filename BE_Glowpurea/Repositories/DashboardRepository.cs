@@ -54,5 +54,13 @@ namespace BE_Glowpurea.Repositories
             return await _context.Products
                 .CountAsync(p => !p.IsDeleted && p.Quantity == 0);
         }
+
+        public async Task<List<Account>> GetUsersAsync()
+        {
+            return await _context.Accounts
+                .Where(a => !a.IsDeleted && a.RoleId == 2)
+                .ToListAsync();
+        }
+
     }
-    }
+}

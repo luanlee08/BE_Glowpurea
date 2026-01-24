@@ -58,10 +58,12 @@ namespace BE_Glowpurea.Services
         }
 
         public async Task UpdateImagesAsync(
-     int productId,
-     string sku,
-     IFormFile? newMainImage,
-     List<IFormFile>? newSubImages)
+    int productId,
+    string sku,
+    IFormFile? newMainImage,
+    List<IFormFile>? newSubImages,
+    List<string>? keepSubImageUrls)
+
         {
             var uploadPath = Path.Combine(
                 _env.WebRootPath, "uploads", "products", sku);
@@ -84,18 +86,16 @@ namespace BE_Glowpurea.Services
                     });
                 }
 
-                // ================= SUB IMAGES (REPLACE) =================
-                if (newSubImages != null && newSubImages.Any())
+                // ================= SUB IMAGES =================
+                if (newSubImages != null)
                 {
-                    // 1️⃣ Validate theo ảnh MỚI
+                    // 🔥 validate luôn
                     if (newSubImages.Count < MIN_SUB || newSubImages.Count > MAX_SUB)
-                        throw new ArgumentException(
-                            $"Ảnh phụ phải từ {MIN_SUB} đến {MAX_SUB}");
+                        throw new ArgumentException("Ảnh phụ phải từ 4 đến 6 ảnh");
 
-                    // 2️⃣ XOÁ TOÀN BỘ ảnh phụ cũ
+                    // xoá toàn bộ ảnh phụ cũ
                     await _repo.RemoveSecondaryAsync(productId);
 
-                    // 3️⃣ ADD ảnh phụ mới
                     var subs = newSubImages.Select(f => new ProductImage
                     {
                         ProductId = productId,
@@ -109,6 +109,7 @@ namespace BE_Glowpurea.Services
                 await _repo.SaveChangesAsync();
             });
         }
+
 
         private string SaveFile(IFormFile file, string path, string sku)
         {

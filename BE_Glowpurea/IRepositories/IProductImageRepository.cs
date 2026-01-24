@@ -14,6 +14,7 @@ namespace BE_Glowpurea.IRepositories
         Task AddRangeAsync(IEnumerable<ProductImage> entities);
         void RemoveRange(IEnumerable<ProductImage> entities);
         Task RemoveSecondaryAsync(int productId);
+        Task<List<ProductImage>> GetSecondaryAsync(int productId);
 
         Task SaveChangesAsync();
         Task ExecuteInTransactionAsync(Func<Task> action);

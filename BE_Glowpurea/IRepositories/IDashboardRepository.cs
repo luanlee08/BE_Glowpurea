@@ -10,5 +10,7 @@ namespace BE_Glowpurea.IRepositories
         Task<int> GetTotalProductsAsync();
         Task<int> GetActiveProductsAsync();
         Task<int> GetOutOfStockProductsAsync();
+
+        Task<List<Account>> GetUsersAsync();
     }
 }

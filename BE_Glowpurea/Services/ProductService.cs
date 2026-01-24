@@ -112,20 +112,26 @@
 
                 await _productRepo.UpdateAsync(product);
 
-                // ✅ Update ảnh nếu có
-                if (request.NewMainImage != null || request.NewSubImages?.Any() == true)
-                {
-                    await _imageService.UpdateImagesAsync(
-                        product.ProductId,
-                        product.Sku,
-                        request.NewMainImage,
-                        request.NewSubImages
-                    );
-                }
+            // ✅ Update ảnh nếu có
+            if (
+   request.NewMainImage != null ||
+   request.NewSubImages?.Any() == true ||
+   request.KeepSubImageUrls != null
+)
+            {
+                await _imageService.UpdateImagesAsync(
+                    product.ProductId,
+                    product.Sku,
+                    request.NewMainImage,
+                    request.NewSubImages,
+                    request.KeepSubImageUrls
+                );
             }
 
+        }
 
-            public async Task<ProductDetailResponse?> GetByIdAsync(int productId)
+
+        public async Task<ProductDetailResponse?> GetByIdAsync(int productId)
             {
                 var product = await _productRepo.GetByIdAsync(productId);
                 if (product == null || product.IsDeleted)
