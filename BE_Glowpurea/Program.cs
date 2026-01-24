@@ -118,7 +118,9 @@ namespace BE_Glowpurea
                                  "https://admin.glowpurea.id.vn"
                               )
                         .AllowAnyHeader()
-                        .AllowAnyMethod();
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+
                 });
             });
 
@@ -149,3 +151,4 @@ namespace BE_Glowpurea
         }
     }
 }
+    
